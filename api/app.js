@@ -1,5 +1,5 @@
 require("dotenv").config();
-const port = 8001;
+const port = 8001; // env?
 const url = process.env.CLIENT_URL;
 
 const fs = require("fs");
