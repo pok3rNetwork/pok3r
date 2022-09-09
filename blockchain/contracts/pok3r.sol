@@ -7,7 +7,7 @@
 
 // contract POK3R is POK3RVRF {
 //     // Safe hand and request counter
-//     using Counters for Counters.Counter;
+//     
 
 //     // Player hand info
 //     struct playerHand {
