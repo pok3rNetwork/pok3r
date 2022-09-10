@@ -1,24 +1,25 @@
 {
-  "name": "pok3r-frontend",
+  "name": "client",
   "version": "0.1.0",
-  "description": "The frontend for the pok3rNetwork",
-  "main": "index.js",
-  "repository": "https://github.com/pok3rNetwork/pok3r",
-  "license": "MIT",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
-  "private": false,
-  "devDependencies": {
+  "dependencies": {
+    "@headlessui/react": "^1.7.0",
+    "@heroicons/react": "^2.0.10",
+    "autoprefixer": "^10.4.8",
+    "next": "12.3.0",
+    "postcss": "^8.4.16",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "tailwindcss": "^3.1.8"
   },
-  "dependencies": {
-    "tailwindcss": "^3.1.8",
-    "next": "^12.3.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+  "devDependencies": {
+    "eslint": "8.23.0",
+    "eslint-config-next": "12.3.0"
   }
 }
