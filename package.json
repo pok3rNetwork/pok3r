@@ -1,0 +1,15 @@
+{
+  "name": "pok3r",
+  "version": "1.0.0",
+  "description": ">P2P Multiplayer Poker Powered by Web3",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup": "node ./util/install.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pok3rNetwork/pok3r/issues"
+  },
+  "homepage": "https://github.com/pok3rNetwork/pok3r#readme"
+}
