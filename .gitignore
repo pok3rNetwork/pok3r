@@ -5,6 +5,8 @@
 **/yarn.lock
 **/package-lock.json
 
+api/static
+
 blockchain/coverage
 blockchain/coverage.json
 blockchain/typechain
