@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "rest": "node ./app.js",
+    "dev": "nodemon ./app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -19,6 +19,7 @@
     "fetch": "^1.1.0",
     "ipfs-http-client": "^58.0.0",
     "js-ipfs": "^0.0.301",
-    "md5": "^2.3.0"
+    "md5": "^2.3.0",
+    "nodemon": "^2.0.19"
   }
 }
