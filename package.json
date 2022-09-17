@@ -5,17 +5,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "setup": "node ./util/install.js",
     "rest": "nodemon ./api/app.js"
 =======
     "setup": "node ./util/install.js"
 >>>>>>> 92925adfa8cbee2ec8cbd09d831368c01e2cd115
+=======
+    "setup": "node ./util/install.js"
+>>>>>>> origin
   },
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/pok3rNetwork/pok3r/issues"
   },
+<<<<<<< HEAD
 <<<<<<< HEAD
   "homepage": "https://github.com/pok3rNetwork/pok3r#readme",
   "dependencies": {
@@ -25,4 +30,7 @@
 =======
   "homepage": "https://github.com/pok3rNetwork/pok3r#readme"
 >>>>>>> 92925adfa8cbee2ec8cbd09d831368c01e2cd115
+=======
+  "homepage": "https://github.com/pok3rNetwork/pok3r#readme"
+>>>>>>> origin
 }
