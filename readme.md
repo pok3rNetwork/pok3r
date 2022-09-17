@@ -89,6 +89,8 @@ Projects will be evaluated based on the following criteria:
 - projects that integrate and use Sign-In with Ethereum || ($500 x 2)
 - Meaningful Contribution to their library || ($1k)
 
+---
+
 ### Roadmap
 
 > Loose roadmap that outlines our path to the final product.
@@ -177,6 +179,8 @@ Integrations (Up to $11.5k)
 - StreamrNetwork
 - LivePeer
 
+---
+
 ### Total Potential Sponsorship Prizes
 
 entire team prize || $26k + $1k in UD Credits
@@ -184,6 +188,9 @@ entire team prize || $26k + $1k in UD Credits
 individual payout || $6.5k + $250 in UD Credits
 
 > comparable to $40/hour or $78k salary
+
+
+---
 
 ### Additional Thoughts (Roadmap V4)
 
@@ -199,6 +206,9 @@ Worldcoin KYC
 4. 🧞 $3k to the most creative use case
 5. ✨ Up to 4x $1k to Honorable mentions
 6. 🏊 $3k Prize Pool - distributed equally among all qualifying submissions
+
+
+---
 
 ## CICD
 
