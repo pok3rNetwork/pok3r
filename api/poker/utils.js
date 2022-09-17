@@ -1,4 +1,6 @@
 function autoplay(game) {
+  console.log('Players', game.getState().players);
+
   //round 1
   game.startRound();
   game.bet(0); //for player 1
@@ -6,6 +8,7 @@ function autoplay(game) {
   game.call(0);
   game.endRound();
   console.log('Table', game.getState().communityCards);
+  console.log('Players', game.getState().players);
 
   //round 2
   game.startRound();
@@ -13,6 +16,7 @@ function autoplay(game) {
   game.check(1); //for player 2
   game.endRound();
   console.log('Table', game.getState().communityCards);
+  console.log('Players', game.getState().players);
 
   //round 3
   game.startRound();
@@ -20,6 +24,7 @@ function autoplay(game) {
   game.call(1); //for player 2
   game.endRound();
   console.log('Table', game.getState().communityCards);
+  console.log('Players', game.getState().players);
 
   //end game
   var result = game.checkResult();

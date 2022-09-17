@@ -36,7 +36,7 @@ function reconstitute(gameState) {
   let deck = new Deck();
   deck.cards = data.deck.cards;
 
-  const game = new Game([1000, 1000], 1);
+  const game = new Game([1, 1], 1);
   game.pot = data.pot;
   game.players = data.players;
   game.deck = deck;
