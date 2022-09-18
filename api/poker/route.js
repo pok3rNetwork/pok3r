@@ -3,34 +3,6 @@ const lobbyUtils = require('./lobby.js');
 const evm = require('../utils/evm.js');
 const autoplay = require('./autoplay.js');
 
-/* @req.body
- * POST `/poker/${gameId}`
- *
- *  {
- *    "player": {
- *      "address":'0x...',
- *      "signature": '1`2312sad...',
- *      "message": 'adsad...'
- *    }
- *  }
- *
- *  {
- *    "action": {
- *    "type": "create"
- *    "inputs": {
- *        "maxPlayers": 2,
- *        "minBet": 1
- *    },
- *  }
- *
- *  {
- *    "action": {
- *      "type": "auto"
- *      "inputs": {},
- *    },
- *  }
- */
-
 function routeGame(app) {
   app
     .route('/poker/:lobbyId')

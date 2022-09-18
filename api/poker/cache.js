@@ -19,7 +19,7 @@ function create(inputs, lobbyId) {
       // mtd.players
     ],
     deposits: [
-      //mtd.deposit
+      // mtd.deposit
     ],
     minBet: null /*mtd.minBet*/,
     maxPlayers: null /*mtd.maxPlayers*/,
