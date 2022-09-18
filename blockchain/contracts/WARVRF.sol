@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity ^0.8.17;
 
 import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
-contract POK3RVRF is VRFConsumerBaseV2 {
+contract WARVRF is VRFConsumerBaseV2 {
     VRFCoordinatorV2Interface COORDINATOR;
     LinkTokenInterface LINKTOKEN;
-
     address vrfCoordinator = 0x7a1BaC17Ccc5b313516C5E16fb24f7659aA5ebed;
     address link_token_contract = 0x326C977E6efc84E512bB9C30f76E30c160eD06FB;
     bytes32 keyHash =
@@ -22,11 +21,11 @@ contract POK3RVRF is VRFConsumerBaseV2 {
     address s_owner;
     mapping(uint256 => bool) public isRequestFulfilled;
 
-    constructor(uint256 _subscriptionId) VRFConsumerBaseV2(vrfCoordinator) {
+    constructor() VRFConsumerBaseV2(vrfCoordinator) {
         COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
         LINKTOKEN = LinkTokenInterface(link_token_contract);
         s_owner = msg.sender;
-        s_subscriptionId = uint64(_subscriptionId);
+        s_subscriptionId = uint64(1720);
     }
 
     // Assumes the subscription is funded sufficiently.
