@@ -10,6 +10,7 @@ contract LobbyTracker is DepositTracker {
         address[] players;
         uint[] deposits;
         uint minBet;
+        uint maxPlayers;
     }
 
     mapping(uint => Lobby) public lobbies;
@@ -18,7 +19,11 @@ contract LobbyTracker is DepositTracker {
     constructor(address _tokenAddress) DepositTracker(_tokenAddress) {}
 
     // LOBBY CREATION
-    function createLobby(uint minBet, uint deposit) public {
+    function createLobby(
+        uint minBet,
+        uint deposit,
+        uint maxPlayers
+    ) public {
         require(deposit <= deposits[msg.sender], "deposit > inEscrow");
         require(minBet <= deposit, "deposit < minBet");
         deposits[msg.sender] -= deposit;
@@ -28,6 +33,9 @@ contract LobbyTracker is DepositTracker {
         thisLobby.players.push(msg.sender);
         thisLobby.deposits.push(deposit);
         thisLobby.minBet = minBet;
+        if (maxPlayers >= 12) maxPlayers = 12;
+        else if (maxPlayers <= 2) maxPlayers = 2;
+        thisLobby.maxPlayers = maxPlayers;
     }
 
     // LOBBY VIEWER
@@ -38,7 +46,7 @@ contract LobbyTracker is DepositTracker {
     function isJoinable(uint id, address player) public view returns (bool) {
         (bool isPlayer, , , ) = stat(id, player);
         if (
-            lobby(id).players.length >= 12 ||
+            lobby(id).players.length >= lobby(id).maxPlayers ||
             lobby(id).players.length == 0 ||
             lobby(id).active ||
             lobby(id).waiting == false ||

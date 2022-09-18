@@ -33,10 +33,10 @@ const autoplay = require('./autoplay.js');
 
 function routeGame(app) {
   app
-    .route('/poker/:gameId')
+    .route('/poker/:lobbyId')
     .get((req, res) => cacheUtils.send(req, res))
     .post(async (req, res) => {
-      let cache = cacheUtils.retrieve(req.params.gameId);
+      let cache = cacheUtils.retrieve(req.params.lobbyId);
       const { action, player } = req.body;
       // const validSignature = await evm.verifySignature(
       //   player.message,
@@ -53,19 +53,11 @@ function routeGame(app) {
       //   return;
       // }
 
-      if (action.type == 'create') {
-        lobbyUtils.create(req, res, cache);
-        return;
-      } else {
-        if (!cache.exists) {
-          res.status(404).json(cache.data);
-          return;
-        }
-      }
-
-      if (action.type == 'auto') {
-        autoplay(cache.data.gameState);
-        return;
+      if (action.type == 'create') lobbyUtils.create(req, res, cache);
+      else {
+        if (!cache.exists) res.status(404).json(cache.data);
+        else if (action.type == 'auto') autoplay(req, res, cache);
+        else res.status(404).json({ notice: 'Route Not Configured' });
       }
     });
 }

@@ -1,11 +1,10 @@
 const cacheUtils = require('./cache.js');
 
 function create(req, res, cache) {
-  // require(action.type === "create");
   if (cache.exists) {
     res.status(409).json({ notice: 'Match Exists' });
   } else {
-    const data = cacheUtils.create(req.body.action.inputs);
+    const data = cacheUtils.create(req.body.action.inputs, req.params.lobbyId);
     cache.data = data;
     cacheUtils.saveThenSend(req, res, cache);
   }
