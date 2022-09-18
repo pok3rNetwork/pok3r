@@ -116,7 +116,6 @@ Integrations (Up to $12.5k + $1000 in UD credits)
 - Polygon
 - ENS
 - Unstoppable Domains
-- QuickNode
 
 #### V2 - Introducing Live Video & More Trustless Operation
 
