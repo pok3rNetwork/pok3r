@@ -5,8 +5,7 @@
 **/yarn.lock
 **/package-lock.json
 **yarn-error.log
-
-api/static
+**/static
 
 blockchain/coverage
 blockchain/coverage.json
