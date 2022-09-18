@@ -4,6 +4,8 @@
 **/.DS_Store
 **/yarn.lock
 **/package-lock.json
+**yarn-error.log
+**/static
 
 <<<<<<< HEAD
 <<<<<<< HEAD

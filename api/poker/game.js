@@ -1,57 +1,62 @@
-const {
-  createGame,
-  metadata,
-  sendGame,
-  saveThenSendGame,
-  reconstitute,
-} = require('./state.js');
-const autoplay = require('./utils.js');
+const fs = require('fs');
+const evm = require('../utils/evm.js');
 
-function routeGame(app) {
-  app
-    .route('/poker/:gameId')
-    .get((req, res) => sendGame(req, res))
-    .post(async (req, res) => {
-      let gameState = metadata(req.params.gameId);
-      const { action, player } = req.body;
-      /*
-       * {
-       *   action: {
-       *     type: 'create/auto',
-       *     inputs: {...}
-       *   },
-       *   player: {
-       *     address:'0x...',
-       *     signature: '1`2312sad...',
-       *     message: 'adsad...'
-       *   }
-       * }
-       */
-
-      if (action.type == 'create') {
-        if (gameState.exists) {
-          res.status(409).json({ notice: 'Match Exists' });
-          return;
-        } else {
-          const game = createGame(action.inputs);
-
-          saveThenSendGame(req, res, gameState.pathTo, game);
-          return;
-        }
-      } else {
-        if (!gameState.exists) {
-          res.status(404).json(gameState.data);
-          return;
-        }
-      }
-
-      if (action.type == 'auto') {
-        game = reconstitute(gameState);
-        autoplay(game);
-        saveThenSendGame(req, res, gameState.pathTo, game);
-        return;
-      }
-    });
+function checkResult(lobbyId) {
+  const root = __dirname.slice(0, __dirname.indexOf('poker'));
+  const pathToLobbies = `${root}/static/lobbies`;
+  const lobbies = fs.readdirSync(pathToLobbies);
+  // clean up if lobby is closed
+  // fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
 }
 
-module.exports = { routeGame };
+function endRound(lobbyId) {
+  // require(action.type === "bet");
+  // if last player
+  // await contract.connect(deployer).disseminate(lobbyId, increment, amounts)
+  // if last round
+  // checkResult(lobbyId);
+}
+
+function extract(req) {
+  const lobbyId = req.params.lobbyId;
+  const inputs = req.body.inputs;
+  const address = req.body.player.address;
+  return { lobbyId, inputs, address };
+}
+
+function bet(req, res, cache) {
+  const { lobbyId, inputs, address } = extract(req);
+  // require(action.type === "bet");
+  // endRound(lobbyId);
+  res.status(200).json('ok');
+}
+
+function check(req, res, cache) {
+  const { lobbyId, inputs, address } = extract(req);
+  // require(action.type === "check");
+  // endRound(lobbyId);
+  res.status(200).json('ok');
+}
+
+function raise(req, res, cache) {
+  const { lobbyId, inputs, address } = extract(req);
+  // require(action.type === "raise");
+  // endRound(lobbyId);
+  res.status(200).json('ok');
+}
+
+function call(req, res, cache) {
+  const { lobbyId, inputs, address } = extract(req);
+  // require(action.type === "call");
+  // endRound(lobbyId);
+  res.status(200).json('ok');
+}
+
+function fold(req, res, cache) {
+  const { lobbyId, inputs, address } = extract(req);
+  // require(action.type === "fold");
+  // endRound(lobbyId);
+  res.status(200).json('ok');
+}
+
+module.exports = { bet, check, raise, call, fold };

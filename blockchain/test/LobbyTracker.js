@@ -67,7 +67,7 @@ describe('LobbyTracker - Ideal Scenarios', () => {
     it('Should take from the deposit when creating a lobby', async () => {
       let numLobbies = 0;
       for await (const client of clients) {
-        await LobbyTracker.connect(client).createLobby(20, 1000);
+        await LobbyTracker.connect(client).createLobby(20, 1000, 12);
         expect((await LobbyTracker.deposits(client.address)) == 9000);
         expect((await LobbyTracker.numLobbies()) == numLobbies);
         numLobbies += 1;
@@ -75,7 +75,7 @@ describe('LobbyTracker - Ideal Scenarios', () => {
     });
 
     it('Should take from the deposit when joining a lobby', async () => {
-      await LobbyTracker.connect(tosser).createLobby(20, 1000);
+      await LobbyTracker.connect(tosser).createLobby(20, 1000, 12);
 
       for await (const client of clients) {
         await LobbyTracker.connect(client).joinLobby(1, 1000);
@@ -84,7 +84,7 @@ describe('LobbyTracker - Ideal Scenarios', () => {
     });
 
     it('Should allow feeless exit from waiting lobbies', async () => {
-      await LobbyTracker.connect(tosser).createLobby(20, 1000);
+      await LobbyTracker.connect(tosser).createLobby(20, 1000, 12);
 
       for await (const client of clients) {
         await LobbyTracker.connect(client).joinLobby(1, 1000);
@@ -101,7 +101,7 @@ describe('LobbyTracker - Ideal Scenarios', () => {
     });
 
     it('Should allow people to increase their deposits', async () => {
-      await LobbyTracker.connect(tosser).createLobby(20, 1000);
+      await LobbyTracker.connect(tosser).createLobby(20, 1000, 12);
 
       for await (const client of clients) {
         await LobbyTracker.connect(client).joinLobby(1, 1000);
@@ -114,7 +114,7 @@ describe('LobbyTracker - Ideal Scenarios', () => {
     });
 
     it('Should allow the Owner to start the game', async () => {
-      await LobbyTracker.connect(tosser).createLobby(20, 1000);
+      await LobbyTracker.connect(tosser).createLobby(20, 1000, 12);
 
       for await (const client of clients) {
         await LobbyTracker.connect(client).joinLobby(1, 1000);
@@ -124,7 +124,7 @@ describe('LobbyTracker - Ideal Scenarios', () => {
     });
 
     it('Should allow the Owner to abort the game', async () => {
-      await LobbyTracker.connect(tosser).createLobby(20, 1000);
+      await LobbyTracker.connect(tosser).createLobby(20, 1000, 12);
       for await (const client of clients) {
         await LobbyTracker.connect(client).joinLobby(1, 1000);
       }
@@ -139,7 +139,7 @@ describe('LobbyTracker - Ideal Scenarios', () => {
     });
 
     it('Should allow the Owner to facilitate the game', async () => {
-      await LobbyTracker.connect(tosser).createLobby(20, 1000);
+      await LobbyTracker.connect(tosser).createLobby(20, 1000, 12);
       for await (const client of clients) {
         await LobbyTracker.connect(client).joinLobby(1, 1000);
       }
