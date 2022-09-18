@@ -23,6 +23,7 @@ function create(inputs, lobbyId) {
     ],
     minBet: null /*mtd.minBet*/,
     maxPlayers: null /*mtd.maxPlayers*/,
+    lastAction: [],
   };
   // use evm utils
 
@@ -52,7 +53,7 @@ function reconstitute(gameState) {
 
 const retrieve = (lobbyId) => {
   const root = __dirname.slice(0, __dirname.indexOf('poker'));
-  const folder = `${root}/static/${lobbyId}`;
+  const folder = `${root}/static/lobbies/${lobbyId}`;
   const pathTo = files(folder);
   const exists = fs.existsSync(pathTo.gameState);
   let data;

@@ -14,7 +14,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors({ origin: url }));
 
-if (!fs.existsSync('./static')) fs.mkdirSync('./static');
+if (!fs.existsSync(`${__dirname}/static/lobbies`))
+  fs.mkdirSync(`${__dirname}/static/lobbies`, { recursive: true });
 app.use('/static', express.static('static'));
 
 app.listen(port, () => {
