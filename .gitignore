@@ -4,15 +4,10 @@
 **/.DS_Store
 **/yarn.lock
 **/package-lock.json
+**yarn-error.log
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 api/static
 
-=======
->>>>>>> 92925adfa8cbee2ec8cbd09d831368c01e2cd115
-=======
->>>>>>> origin
 blockchain/coverage
 blockchain/coverage.json
 blockchain/typechain

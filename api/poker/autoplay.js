@@ -1,3 +1,5 @@
+const cacheUtils = require('./cache.js');
+
 function autoplay(game) {
   console.log('Players', game.getState().players);
 
@@ -33,6 +35,8 @@ function autoplay(game) {
   } else {
     console.log('Draw');
   }
+
+  cacheUtils.saveThenSend(req, res, cache);
 }
 
 module.exports = autoplay;

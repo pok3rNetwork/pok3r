@@ -235,7 +235,6 @@ contract LobbyTracker is DepositTracker {
         );
 
         require(isPlayer == true && deposit > 0, "!activePlayer");
-        require(lobby(lobbyId).waiting == false, "inappropriateTiming");
 
         uint cut = deposit / 1000;
         uint take = deposit - cut;

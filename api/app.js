@@ -8,7 +8,7 @@ const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { routeGame } = require('./poker/game.js');
+const { routeGame } = require('./poker/route.js');
 
 const app = express();
 app.use(bodyParser.json());
