@@ -23,7 +23,9 @@ function create(inputs, lobbyId) {
     ],
     minBet: null /*mtd.minBet*/,
     maxPlayers: null /*mtd.maxPlayers*/,
-    lastAction: [],
+    lastAction: null,
+    ready: [],
+    round: 0,
   };
   // use evm utils
 

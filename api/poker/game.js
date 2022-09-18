@@ -1,20 +1,32 @@
 const fs = require('fs');
 const evm = require('../utils/evm.js');
 
-function checkResult(lobbyId) {
-  const root = __dirname.slice(0, __dirname.indexOf('poker'));
-  const pathToLobbies = `${root}/static/lobbies`;
-  const lobbies = fs.readdirSync(pathToLobbies);
-  // clean up if lobby is closed
-  // fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
-}
-
-function endRound(lobbyId) {
-  // require(action.type === "bet");
-  // if last player
-  // await contract.connect(deployer).disseminate(lobbyId, increment, amounts)
-  // if last round
-  // checkResult(lobbyId);
+function endRound(lobbyId, cache) {
+  let { gameState, metadata } = cache.data;
+  let result;
+  let playerState = gameState.getState().players;
+  if ('last player') {
+    result = cache.data.gameState.checkResult();
+    // update metadata (distribution funds)
+  }
+  if (metadata.round >= 3) {
+    let increment = [];
+    let amounts = [];
+    const players = metadata.players;
+    players.forEach((player) => {
+      const index = players.indexOf(player);
+      increment.push(result.index == index);
+      // amounts.push(wagers);
+    });
+    // await contract.connect(deployer).disseminate(lobbyId, increment, amounts)
+    // const root = __dirname.slice(0, __dirname.indexOf('poker'));
+    // const pathToLobbies = `${root}/static/lobbies`;
+    // const lobbies = fs.readdirSync(pathToLobbies);
+    // let activePlayers; // = await contract.activePlayers(lobbyId);
+    // if (activePlayers == 0)
+    //   fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
+  }
+  return cache;
 }
 
 function extract(req) {
@@ -26,37 +38,54 @@ function extract(req) {
 
 function bet(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
-  // require(action.type === "bet");
-  // endRound(lobbyId);
-  res.status(200).json('ok');
+  let metadata = cache.data.metadata;
+  if (metadata.players.contains(address)) {
+    //
+    cache = endRound(cache);
+    cacheUtils.saveThenSend(req, res, cache);
+  } else res.status(403).json({ notice: 'not player' });
 }
 
 function check(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
-  // require(action.type === "check");
-  // endRound(lobbyId);
-  res.status(200).json('ok');
+  let metadata = cache.data.metadata;
+  if (metadata.players.contains(address)) {
+    //
+    cache = endRound(cache);
+    cacheUtils.saveThenSend(req, res, cache);
+  } else res.status(403).json({ notice: 'not player' });
 }
 
 function raise(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
-  // require(action.type === "raise");
-  // endRound(lobbyId);
-  res.status(200).json('ok');
+  let metadata = cache.data.metadata;
+  if (metadata.players.contains(address)) {
+    //
+    cache = endRound(cache);
+    cacheUtils.saveThenSend(req, res, cache);
+  } else res.status(403).json({ notice: 'not player' });
 }
 
 function call(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
-  // require(action.type === "call");
-  // endRound(lobbyId);
-  res.status(200).json('ok');
+  let metadata = cache.data.metadata;
+  if (metadata.players.contains(address)) {
+    //
+    cache = endRound(cache);
+    cacheUtils.saveThenSend(req, res, cache);
+  } else res.status(403).json({ notice: 'not player' });
 }
 
 function fold(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
-  // require(action.type === "fold");
-  // endRound(lobbyId);
-  res.status(200).json('ok');
+  let metadata = cache.data.metadata;
+  if (metadata.players.contains(address)) {
+    //
+    cache = endRound(cache);
+    cacheUtils.saveThenSend(req, res, cache);
+  } else res.status(403).json({ notice: 'not player' });
 }
+
+// function autoFold() {}
 
 module.exports = { bet, check, raise, call, fold };
