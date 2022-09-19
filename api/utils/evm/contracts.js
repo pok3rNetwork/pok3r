@@ -1,5 +1,5 @@
-const { invalidChain, getProvider } = require("./provider.js");
-const { ethers } = require("ethers");
+const { invalidChain, getProvider } = require('./provider.js');
+const { ethers } = require('ethers');
 
 function Contract(address, abi, chainId) {
   const provider = getProvider(chainId);
@@ -9,12 +9,13 @@ function Contract(address, abi, chainId) {
 
 const extractedObject = (pathTo, name) => {
   return JSON.parse(
-    require("fs").readFileSync(`${pathTo}/${name}.json`).toString()
+    require('fs').readFileSync(`${pathTo}/${name}.json`).toString()
   );
 };
 
 function loadContract(chainId, name) {
-  const artifactsDir = `./data/${chainId}`;
+  const root = __dirname.slice(0, __dirname.indexOf('utils'));
+  const artifactsDir = `${root}/data/${chainId}`;
   const address = extractedObject(artifactsDir, `${name}-address`).address;
   const abi = extractedObject(artifactsDir, name).abi;
   return Contract(address, abi, chainId);

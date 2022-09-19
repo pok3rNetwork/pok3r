@@ -1,5 +1,7 @@
 const cacheUtils = require('./cache.js');
 const fs = require('fs');
+const evm = require('../utils/evm.js');
+const contract = evm.loadContract(31337, 'LobbyTracker');
 
 function extract(req) {
   const lobbyId = req.params.lobbyId;

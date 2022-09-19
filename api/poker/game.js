@@ -1,5 +1,6 @@
 const fs = require('fs');
 const evm = require('../utils/evm.js');
+const contract = evm.loadContract(31337, 'LobbyTracker');
 
 function endRound(lobbyId, cache) {
   let { gameState, metadata } = cache.data;
