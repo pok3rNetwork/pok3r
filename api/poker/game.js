@@ -22,6 +22,8 @@ async function endRound(lobbyId, cache) {
       increment.push(result.index == index);
       // amounts.push(wagers);
     });
+
+    const deployer = await evm.deployer();
     // await contract.connect(deployer).disseminate(lobbyId, increment, amounts)
     // const root = __dirname.slice(0, __dirname.indexOf('poker'));
     // const pathToLobbies = `${root}/static/lobbies`;
@@ -119,6 +121,7 @@ async function fold(req, res, cache) {
 // @ctnava todo - monitor frontend
 async function abort() {
   if ('frontend.isDown()') {
+    const deployer = await evm.deployer();
     const root = __dirname.slice(0, __dirname.indexOf('poker'));
     const pathToLobbies = `${root}/static/lobbies`;
     const lobbies = fs.readdirSync(pathToLobbies);
@@ -138,6 +141,7 @@ async function handleTimeout(cache) {
     const lastAction = cache.data.metadata.lastAction;
     const timestamp = new Date().getTime();
     const players = cache.data.metadata.players;
+    const deployer = await evm.deployer();
     for await (const player of players) {
       const index = players.indexOf(player);
       if (timestamp - lastAction > timeoutPeriod) {
