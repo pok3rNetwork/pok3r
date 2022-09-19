@@ -1,6 +1,8 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import GameList from "../components/GameList";
+import PageFooterOnly from "../components/PageFooterOnly";
 import {
   Bars3Icon,
   CalendarIcon,
@@ -24,6 +26,73 @@ function classNames(...classes) {
 
 export default function Example() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Placeholder game list
+  const gameList = [
+    {
+      name: "Degen Theatre",
+      playerNumber: "1/2 Players",
+      difficulty: "Beginner-Friendly",
+      pot: 500,
+      imageUrl:
+        "https://images.unsplash.com/photo-1541278107931-e006523892df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
+    },
+    {
+      name: "Degen Theatre",
+      playerNumber: "1/2 Players",
+      difficulty: "Beginner-Friendly",
+      pot: 500,
+      imageUrl:
+        "https://images.unsplash.com/photo-1541278107931-e006523892df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
+    },
+    {
+      name: "Degen Theatre",
+      playerNumber: "1/2 Players",
+      difficulty: "Beginner-Friendly",
+      pot: 500,
+      imageUrl:
+        "https://images.unsplash.com/photo-1541278107931-e006523892df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
+    },
+    {
+      name: "Degen Theatre",
+      playerNumber: "1/2 Players",
+      difficulty: "Beginner-Friendly",
+      pot: 500,
+      imageUrl:
+        "https://images.unsplash.com/photo-1541278107931-e006523892df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
+    },
+    {
+      name: "Degen Theatre",
+      playerNumber: "1/2 Players",
+      difficulty: "Beginner-Friendly",
+      pot: 500,
+      imageUrl:
+        "https://images.unsplash.com/photo-1541278107931-e006523892df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
+    },
+    {
+      name: "Degen Theatre",
+      playerNumber: "1/2 Players",
+      difficulty: "Beginner-Friendly",
+      pot: 500,
+      imageUrl:
+        "https://images.unsplash.com/photo-1541278107931-e006523892df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
+    },
+    {
+      name: "Degen Theatre",
+      playerNumber: "1/2 Players",
+      difficulty: "Beginner-Friendly",
+      pot: 500,
+      imageUrl:
+        "https://images.unsplash.com/photo-1541278107931-e006523892df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
+    },
+    {
+      name: "Degen Theatre",
+      playerNumber: "1/2 Players",
+      difficulty: "Beginner-Friendly",
+      pot: 500,
+      imageUrl:
+        "https://images.unsplash.com/photo-1541278107931-e006523892df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
+    },
+  ];
 
   return (
     <>
@@ -222,20 +291,20 @@ export default function Example() {
               <Bars3Icon className="h-6 w-6 text-white" aria-hidden="true" />
             </button>
           </div>
-          <main className="flex-1 bg-gray-600">
-            <div className="py-6">
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h1 className="text-2xl font-semibold text-white">Dashboard</h1>
-              </div>
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-                {/* Replace with your content */}
-                <div className="py-4">
-                  <div className="h-96 rounded-lg border-4 border-dashed border-gray-200" />
+          <PageFooterOnly>
+            <main className="flex-1 bg-gray-600">
+              <div className="py-6">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                  <h1 className="text-2xl font-semibold text-white font-mono">
+                    Available Lobbies{" "}
+                  </h1>
                 </div>
-                {/* /End replace */}
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 mt-12">
+                  <GameList gameList={gameList} />
+                </div>
               </div>
-            </div>
-          </main>
+            </main>
+          </PageFooterOnly>
         </div>
       </div>
     </>
