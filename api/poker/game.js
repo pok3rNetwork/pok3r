@@ -45,9 +45,14 @@ function extract(req) {
 
 async function bet(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
+  const { minBet } = cache.data.gameState.initialBet;
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
-    cache.data.gameState.bet(metadata.players.indexOf(address));
+    const index = metadata.players.indexOf(address);
+    cache.data.gameState.bet(index);
+    cache.data.gameState.players[index].money -= minBet;
+    // see if active?
+    // require, amount <= deposit
 
     cache = endRound(cache);
     cacheUtils.saveThenSend(req, res, cache);
@@ -58,7 +63,9 @@ async function check(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
-    cache.data.gameState.check(metadata.players.indexOf(address));
+    const index = metadata.players.indexOf(address);
+    cache.data.gameState.check(index);
+    // see if active?
 
     cache = endRound(cache);
     cacheUtils.saveThenSend(req, res, cache);
@@ -69,10 +76,12 @@ async function raise(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
-    cache.data.gameState.raise(
-      metadata.players.indexOf(address),
-      inputs.amount
-    );
+    const index = metadata.players.indexOf(address);
+    const amount = inputs.amount;
+    cache.data.gameState.raise(index, amount);
+    cache.data.gameState.players[index].money -= amount;
+    // require, amount <= deposit, see if others call?
+    // see if active?
 
     cache = endRound(cache);
     cacheUtils.saveThenSend(req, res, cache);
@@ -83,7 +92,10 @@ async function call(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
-    cache.data.gameState.call(metadata.players.indexOf(address));
+    const index = metadata.players.indexOf(address);
+    cache.data.gameState.call(index);
+    // require, amount <= deposit
+    // see if active?
 
     cache = endRound(cache);
     cacheUtils.saveThenSend(req, res, cache);
@@ -94,7 +106,9 @@ async function fold(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
-    cache.data.gameState.fold(metadata.players.indexOf(address));
+    const index = metadata.players.indexOf(address);
+    cache.data.gameState.fold(index);
+    // see if active?
 
     cache = endRound(cache);
     cacheUtils.saveThenSend(req, res, cache);
