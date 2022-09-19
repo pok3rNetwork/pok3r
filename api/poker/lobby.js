@@ -72,6 +72,7 @@ async function start(req, res, cache) {
     fresh = state.waiting == true && state.active == false;
     if (fresh == false) res.status(409).json({ notice: 'stale match' });
     else {
+      const deployer = await evm.deployer();
       await contract.connect(deployer).startGame(lobbyId);
       state = await lobbyState(lobbyId);
 

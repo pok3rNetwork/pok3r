@@ -40,11 +40,11 @@ function poker(app) {
         else if (action.type == 'start')
           await lobbyUtils.start(req, res, cache);
         // during the game
-        else if (action.type == 'bet') gameUtils.bet(req, res, cache);
-        else if (action.type == 'check') gameUtils.check(req, res, cache);
-        else if (action.type == 'raise') gameUtils.raise(req, res, cache);
-        else if (action.type == 'call') gameUtils.call(req, res, cache);
-        else if (action.type == 'fold') gameUtils.fold(req, res, cache);
+        else if (action.type == 'bet') await gameUtils.bet(req, res, cache);
+        else if (action.type == 'check') await gameUtils.check(req, res, cache);
+        else if (action.type == 'raise') await gameUtils.raise(req, res, cache);
+        else if (action.type == 'call') await gameUtils.call(req, res, cache);
+        else if (action.type == 'fold') await gameUtils.fold(req, res, cache);
         // catch
         else res.status(404).json({ notice: 'Route Not Configured' });
       }
