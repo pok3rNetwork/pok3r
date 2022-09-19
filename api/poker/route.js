@@ -4,7 +4,7 @@ const gameUtils = require('./game.js');
 const evm = require('../utils/evm.js');
 const autoplay = require('./autoplay.js');
 
-function routeGame(app) {
+function poker(app) {
   app
     .route('/poker/:lobbyId')
     .get((req, res) => cacheUtils.send(req, res))
@@ -47,4 +47,4 @@ function routeGame(app) {
     });
 }
 
-module.exports = { routeGame };
+module.exports = poker;
