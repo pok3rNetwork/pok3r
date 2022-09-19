@@ -2,15 +2,18 @@ const fs = require('fs');
 const evm = require('../utils/evm.js');
 const contract = evm.loadContract(31337, 'LobbyTracker');
 
-function endRound(lobbyId, cache) {
+async function endRound(lobbyId, cache) {
   let { gameState, metadata } = cache.data;
   let result;
   let playerState = gameState.getState().players;
+
   if ('last player') {
-    result = cache.data.gameState.checkResult();
+    cache.data.gameState.endRound();
     // update metadata (distribution funds)
   }
+
   if (metadata.round >= 3) {
+    result = cache.data.gameState.checkResult();
     let increment = [];
     let amounts = [];
     const players = metadata.players;
@@ -26,7 +29,10 @@ function endRound(lobbyId, cache) {
     // let activePlayers; // = await contract.activePlayers(lobbyId);
     // if (activePlayers == 0)
     //   fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
-  }
+
+    // newGame
+  } else cache.data.gameState.startRound();
+
   return cache;
 }
 
@@ -37,51 +43,59 @@ function extract(req) {
   return { lobbyId, inputs, address };
 }
 
-function bet(req, res, cache) {
+async function bet(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
-    //
+    cache.data.gameState.bet(metadata.players.indexOf(address));
+
     cache = endRound(cache);
     cacheUtils.saveThenSend(req, res, cache);
   } else res.status(403).json({ notice: 'not player' });
 }
 
-function check(req, res, cache) {
+async function check(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
-    //
+    cache.data.gameState.check(metadata.players.indexOf(address));
+
     cache = endRound(cache);
     cacheUtils.saveThenSend(req, res, cache);
   } else res.status(403).json({ notice: 'not player' });
 }
 
-function raise(req, res, cache) {
+async function raise(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
-    //
+    cache.data.gameState.raise(
+      metadata.players.indexOf(address),
+      inputs.amount
+    );
+
     cache = endRound(cache);
     cacheUtils.saveThenSend(req, res, cache);
   } else res.status(403).json({ notice: 'not player' });
 }
 
-function call(req, res, cache) {
+async function call(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
-    //
+    cache.data.gameState.call(metadata.players.indexOf(address));
+
     cache = endRound(cache);
     cacheUtils.saveThenSend(req, res, cache);
   } else res.status(403).json({ notice: 'not player' });
 }
 
-function fold(req, res, cache) {
+async function fold(req, res, cache) {
   const { lobbyId, inputs, address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
-    //
+    cache.data.gameState.fold(metadata.players.indexOf(address));
+
     cache = endRound(cache);
     cacheUtils.saveThenSend(req, res, cache);
   } else res.status(403).json({ notice: 'not player' });

@@ -4,14 +4,13 @@ const evm = require('../utils/evm.js');
 const { contract, lobbyState } = require('./contract.js');
 
 function create(state, lobbyId) {
-  const { maxPlayers, minBet } = state;
-  let lobby = [];
-  for (let i = 0; i < maxPlayers; i++) lobby.push(1000);
+  const { minBet, deposits } = state;
+  let lobby = deposits.length < 2 ? [1000, 1000] : deposits;
   let gameState = new Game(lobby, minBet);
 
   let ready = [];
   let lastAction = [];
-  state.players.forEach((player) => {
+  state.players.forEach(() => {
     ready.push(false);
     lastAction.push(null);
   });
@@ -21,9 +20,9 @@ function create(state, lobbyId) {
     waiting: state.waiting,
     active: state.active,
     players: state.players,
-    deposits: state.deposits,
+    deposits,
     minBet,
-    maxPlayers,
+    maxPlayers: state.maxPlayers,
     lastAction,
     ready,
     round: 0,
