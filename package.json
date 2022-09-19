@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "setup": "node ./util/install.js",
-    "rest": "nodemon ./api/app.js"
+    "rest": "nodemon ./api/app.js",
+    "localchain": "npx hardhat node",
+    "deploy": "npx hardhat run blockchain/scripts/deploy.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +16,11 @@
   },
   "homepage": "https://github.com/pok3rNetwork/pok3r#readme",
   "dependencies": {
+    "@chainlink/contracts": "^0.4.1",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "@openzeppelin/contracts": "^4.7.3",
+    "dotenv": "^16.0.2",
+    "hardhat": "^2.11.2",
     "holdem-poker": "^0.2.0",
     "nodemon": "^2.0.19"
   }
