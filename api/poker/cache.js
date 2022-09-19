@@ -1,31 +1,33 @@
 const fs = require('fs');
 const { Game, Deck } = require('holdem-poker');
 const evm = require('../utils/evm.js');
+const { contract, lobbyState } = require('./contract.js');
 
-function create(inputs, lobbyId) {
-  // check evm to verify lobby creation
-
-  const { maxPlayers, minBet } = inputs;
-  // const mtd = inputs.metadata;
+function create(state, lobbyId) {
+  const { maxPlayers, minBet } = state;
   let lobby = [];
   for (let i = 0; i < maxPlayers; i++) lobby.push(1000);
   let gameState = new Game(lobby, minBet);
 
+  let ready = [];
+  let lastAction = [];
+  state.players.forEach((player) => {
+    ready.push(false);
+    lastAction.push(null);
+  });
+
   let metadata = {
     lobbyId,
-    waiting: true,
-    active: false,
-    players: [
-      // mtd.players
-    ],
-    deposits: [
-      // mtd.deposit
-    ],
-    minBet: null /*mtd.minBet*/,
-    maxPlayers: null /*mtd.maxPlayers*/,
-    lastAction: [],
+    waiting: state.waiting,
+    active: state.active,
+    players: state.players,
+    deposits: state.deposits,
+    minBet,
+    maxPlayers,
+    lastAction,
+    ready,
+    round: 0,
   };
-  // use evm utils
 
   return { gameState, metadata };
 }
@@ -67,7 +69,7 @@ const retrieve = (lobbyId) => {
   return { folder, exists, data };
 };
 
-// conditionally limit scope here
+// @ctnava todo - conditionally limit scope here
 function send(req, res) {
   let cache = retrieve(req.params.lobbyId);
   res.status(cache.exists ? 200 : 404).json(cache.data);

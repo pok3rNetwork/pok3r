@@ -1,5 +1,5 @@
 require('dotenv').config();
-const port = process.env.PORT ? process.env.PORT : 8081; // env?
+const port = process.env.API_PORT ? process.env.API_PORT : 8081;
 const url = process.env.CLIENT_URL
   ? process.env.CLIENT_URL
   : `http://localhost:${port}/poker/`;
@@ -8,7 +8,7 @@ const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { routeGame } = require('./poker/route.js');
+const poker = require('./poker/route.js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -26,4 +26,4 @@ app.get('/', (req, res) => {
   res.json({ welcomeMessage: 'Hello World!', url });
 });
 
-routeGame(app, __dirname);
+poker(app, __dirname);

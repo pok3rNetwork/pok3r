@@ -1,73 +1,102 @@
 const cacheUtils = require('./cache.js');
 const fs = require('fs');
+const evm = require('../utils/evm.js');
+const { contract, lobbyState } = require('./contract.js');
 
 function extract(req) {
   const lobbyId = req.params.lobbyId;
   const inputs = req.body.action.inputs;
-  console.log(req.body);
   const address = req.body.player.address;
   return { lobbyId, inputs, address };
 }
 
-function create(req, res, cache) {
-  const { lobbyId, inputs, address } = extract(req);
-  if (cache.exists) {
-    res.status(409).json({ notice: 'Match Exists' });
-  } else {
-    const data = cacheUtils.create(inputs, lobbyId);
-    cache.data = data;
+async function updateMetadata(req, res, cache) {
+  const { lobbyId } = extract(req);
+  const state = await lobbyState(lobbyId);
+  const fresh = state.waiting == true && state.active == false;
+  if (fresh == false) res.status(409).json({ notice: 'stale match' });
+  else {
+    cache.data = cacheUtils.create(state, lobbyId);
     cacheUtils.saveThenSend(req, res, cache);
   }
 }
 
-function join(req, res, cache) {
-  const { lobbyId, inputs, address } = extract(req);
-  // joinGame
-  res.status(200).json('ok');
+async function create(req, res, cache) {
+  if (cache.exists) {
+    res.status(409).json({ notice: 'match exists' });
+  } else {
+    await updateMetadata(req, res, cache);
+  }
 }
 
-function leave(req, res, cache) {
-  const { lobbyId, inputs, address } = extract(req);
-  // require(action.type === "leave");
-  // await contract.connect(deployer).ejectPlayer(lobbyId, address)
-  res.status(200).json('ok');
+async function joinGame(req, res, cache) {
+  const { address } = extract(req);
+  let metadata = cache.data.metadata;
+  if (metadata.players.contains(address))
+    res.status(403).json({ notice: 'already joined' });
+  else await updateMetadata(req, res, cache);
 }
 
-function readyUp(req, res, cache) {
-  const { lobbyId, inputs, address } = extract(req);
-  // require(action.type === 'ready');
-  res.status(200).json('ok');
+async function leave(req, res, cache) {
+  const { address } = extract(req);
+  let metadata = cache.data.metadata;
+  if (!metadata.players.contains(address))
+    res.status(403).json({ notice: 'not player' });
+  else await updateMetadata(req, res, cache);
 }
 
-function start(req, res, cache) {
-  const { lobbyId, inputs, address } = extract(req);
-  // await contract.connect(deployer).startGame(lobbyId)
-  res.status(200).json('ok');
+async function readyUp(req, res, cache) {
+  const { address } = extract(req);
+  let metadata = cache.data.metadata;
+  if (metadata.players.contains(address)) {
+    let readyState = metadata.ready[metadata.players.indexOf(address)];
+    cache.data.metadata.ready[metadata.players.indexOf(address)] = !readyState;
+    cacheUtils.saveThenSend(req, res, cache);
+  } else res.status(403).json({ notice: 'not player' });
 }
 
-function abort() {
-  const root = __dirname.slice(0, __dirname.indexOf('poker'));
-  const pathToLobbies = `${root}/static/lobbies`;
-  const lobbies = fs.readdirSync(pathToLobbies);
-  // compare lobbies to activeLobbies
-  if ('frontend.isDown()')
-    lobbies.forEach((lobbyId) => async () => {
-      // await contract.connect(deployer).abortGame(parseInt(lobbyId));
-      // fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
-    });
-}
+async function start(req, res, cache) {
+  const { lobbyId, address } = extract(req);
 
-function handleTimeout() {
-  // ejectPlayer(lobbyId, address)
-  // abortGame if frontend does not respond
+  let metadata = cache.data.metadata;
+  let fresh = metadata.waiting == true && metadata.active == false;
+  if (metadata.ready.contains(false))
+    res.status(403).json({ notice: 'players not ready' });
+  else if (metadata.players.length < 2)
+    res.status(403).json({ notice: 'not enough players' });
+  else if (!metadata.players.contains(address))
+    res.status(403).json({ notice: 'not player' });
+  else if (fresh == false) res.status(409).json({ notice: 'stale match' });
+  else {
+    let state = await lobbyState(lobbyId);
+    fresh = state.waiting == true && state.active == false;
+    if (fresh == false) res.status(409).json({ notice: 'stale match' });
+    else {
+      await contract.connect(deployer).startGame(lobbyId);
+      state = await lobbyState(lobbyId);
+
+      data = cacheUtils.create(state, lobbyId);
+      let lastAction = [];
+      const timestamp = new Date().getTime();
+      data.metadata.lastAction.forEach(() => {
+        lastAction.push(timestamp);
+      });
+      data.metadata.lastAction = timestamp;
+      data.metadata.ready = cache.data.metadata.ready;
+      data.metadata.round = 1;
+      cache.data = data;
+
+      cache.data.gameState.startRound();
+
+      cacheUtils.saveThenSend(req, res, cache);
+    }
+  }
 }
 
 module.exports = {
   create,
-  join,
+  joinGame,
   leave,
   readyUp,
   start,
-  abort,
-  handleTimeout,
 };

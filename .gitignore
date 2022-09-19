@@ -1,5 +1,7 @@
 **/node_modules
 **/static
+**/31337
+**/1337
 **.code-workspace
 **.env
 **.DS_Store
