@@ -13,7 +13,7 @@ export default function Home() {
       </Head>
       <Page>
         <section>
-          <div className="bg-indigo-700">
+          <div className="bg-gray-700">
             <div className="mx-auto max-w-2xl py-16 px-4 text-center sm:py-20 sm:px-6 lg:px-8">
               <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 <span className="block">
@@ -22,13 +22,13 @@ export default function Home() {
                 </span>
                 {/* <span className="block">Start using our app today.</span> */}
               </h2>
-              <p className="mt-4 text-lg leading-6 text-indigo-200">
+              <p className="mt-4 text-lg leading-6 text-green-400">
                 Ac euismod vel sit maecenas id pellentesque eu sed consectetur.
                 Malesuada adipiscing sagittis vel nulla nec.
               </p>
               <a
                 href="#"
-                className="mt-8 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-white px-5 py-3 text-base font-medium text-indigo-600 hover:bg-indigo-50 sm:w-auto"
+                className="mt-8 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-green-500 px-5 py-3 text-base font-medium text-white hover:bg-green-50 sm:w-auto"
               >
                 Launch app
               </a>
@@ -36,11 +36,11 @@ export default function Home() {
           </div>
         </section>
         <section>
-          <div className="overflow-hidden bg-white py-16 px-4 sm:px-6 lg:px-8 xl:py-36">
+          <div className="overflow-hidden bg-gray-600 py-16 px-4 sm:px-6 lg:px-8 xl:py-36">
             <div className="mx-auto max-w-max lg:max-w-7xl">
               <div className="relative z-10 mb-8 md:mb-2 md:px-6">
                 <div className="max-w-prose text-base lg:max-w-none">
-                  <h2 className="font-semibold leading-6 text-indigo-600">
+                  <h2 className="font-semibold leading-6 text-green-400">
                     How Pok3r Network Works
                   </h2>
                   <p className="mt-2 text-3xl font-bold leading-8 tracking-tight text-gray-900 sm:text-4xl">
@@ -49,9 +49,9 @@ export default function Home() {
                 </div>
               </div>
               <div className="relative">
-                <div className="relative md:bg-white md:p-6">
+                <div className="relative  md:p-6">
                   <div className="lg:grid lg:grid-cols-2 lg:gap-6">
-                    <div className="prose prose-lg prose-indigo text-gray-500 lg:max-w-none">
+                    <div className="prose prose-lg prose-green text-gray-900 lg:max-w-none">
                       <p>
                         Ultrices ultricies a in odio consequat egestas rutrum.
                         Ut vitae aliquam in ipsum. Duis nullam placerat cursus
@@ -83,7 +83,7 @@ export default function Home() {
                         Vestibulum purus nibh ac ultricies congue.
                       </p>
                     </div>
-                    <div className="prose prose-lg prose-indigo mt-6 text-gray-500 lg:mt-0">
+                    <div className="prose prose-lg prose-green mt-6 text-gray-900 lg:mt-0">
                       <p>
                         Erat pellentesque dictumst ligula porttitor risus eget
                         et eget. Ultricies tellus felis id dignissim eget. Est

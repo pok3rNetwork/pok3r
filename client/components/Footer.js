@@ -24,9 +24,9 @@ const navigation = [
   },
 ];
 
-export default function Example() {
+export default function Footer() {
   return (
-    <footer className="bg-white">
+    <footer className="bg-gray-800">
       <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
         <div className="flex justify-center space-x-6 md:order-2">
           {navigation.map((item) => (
@@ -36,7 +36,10 @@ export default function Example() {
               className="text-gray-400 hover:text-gray-500"
             >
               <span className="sr-only">{item.name}</span>
-              <item.icon className="h-6 w-6" aria-hidden="true" />
+              <item.icon
+                className="h-6 w-6 text-green-400"
+                aria-hidden="true"
+              />
             </a>
           ))}
         </div>
