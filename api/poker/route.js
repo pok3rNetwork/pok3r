@@ -24,17 +24,21 @@ function poker(app) {
         return;
       }
 
-      if (action.type == 'create') lobbyUtils.create(req, res, cache);
+      if (action.type == 'create') await lobbyUtils.create(req, res, cache);
       else {
         // catch
         if (!cache.exists) res.status(404).json(cache.data);
-        // testing the game
+        // testing the game logic (off-chain)
         else if (action.type == 'auto') autoplay(req, res, cache);
         // before the game
-        else if (action.type == 'join') lobbyUtils.join(req, res, cache);
-        else if (action.type == 'leave') lobbyUtils.leave(req, res, cache);
-        else if (action.type == 'readyUp') lobbyUtils.readyUp(req, res, cache);
-        else if (action.type == 'start') lobbyUtils.start(req, res, cache);
+        else if (action.type == 'join')
+          await lobbyUtils.joinGame(req, res, cache);
+        else if (action.type == 'leave')
+          await lobbyUtils.leave(req, res, cache);
+        else if (action.type == 'readyUp')
+          await lobbyUtils.readyUp(req, res, cache);
+        else if (action.type == 'start')
+          await lobbyUtils.start(req, res, cache);
         // during the game
         else if (action.type == 'bet') gameUtils.bet(req, res, cache);
         else if (action.type == 'check') gameUtils.check(req, res, cache);

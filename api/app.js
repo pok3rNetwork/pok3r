@@ -1,5 +1,5 @@
 require('dotenv').config();
-const port = process.env.PORT ? process.env.PORT : 8081; // env?
+const port = process.env.API_PORT ? process.env.API_PORT : 8081;
 const url = process.env.CLIENT_URL
   ? process.env.CLIENT_URL
   : `http://localhost:${port}/poker/`;

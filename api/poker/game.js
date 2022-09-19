@@ -87,6 +87,37 @@ function fold(req, res, cache) {
   } else res.status(403).json({ notice: 'not player' });
 }
 
+// INTERNAL
+// @ctnava todo - monitor frontend
+async function abort() {
+  if ('frontend.isDown()') {
+    const root = __dirname.slice(0, __dirname.indexOf('poker'));
+    const pathToLobbies = `${root}/static/lobbies`;
+    const lobbies = fs.readdirSync(pathToLobbies);
+    // purge();
+    // compare lobbies to activeLobbies
+
+    lobbies.forEach((lobbyId) => async () => {
+      // await contract.connect(deployer).abortGame(parseInt(lobbyId));
+      fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
+    });
+  }
+}
+
 // function autoFold() {}
+async function handleTimeout(cache) {
+  if (cache.metadata.active == true && cache.metadata.waiting == false) {
+    const lastAction = cache.data.metadata.lastAction;
+    const timestamp = new Date().getTime();
+    const players = cache.data.metadata.players;
+    for await (const player of players) {
+      const index = players.indexOf(player);
+      if (timestamp - lastAction > timeoutPeriod) {
+        // purge();
+        await contract.connect(deployer).ejectPlayer(lobbyId, address);
+      }
+    }
+  }
+}
 
 module.exports = { bet, check, raise, call, fold };

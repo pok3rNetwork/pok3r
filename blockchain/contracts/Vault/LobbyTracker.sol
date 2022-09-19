@@ -39,7 +39,7 @@ contract LobbyTracker is DepositTracker {
     }
 
     // LOBBY VIEWER
-    function lobby(uint id) internal view returns (Lobby memory) {
+    function lobby(uint id) public view returns (Lobby memory) {
         return lobbies[id];
     }
 
