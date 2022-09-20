@@ -7,6 +7,8 @@ async function initialize(signers, token, LobbyTracker) {
     await LobbyTracker.connect(signer).createLobby(20, 1000, 12);
   }
 
+  await LobbyTracker.connect(signers[1]).joinLobby(1, 1000);
+
   console.log('\nTest Tokens Minted, Approved, & Deposited\n');
 }
 
