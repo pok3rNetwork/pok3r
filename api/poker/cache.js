@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { Game, Deck } = require('holdem-poker');
+const { Game, Deck } = require('./holdem.js');
 const evm = require('../utils/evm.js');
 const { contract, lobbyState } = require('./contract.js');
 

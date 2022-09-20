@@ -7,7 +7,7 @@ async function endRound(lobbyId, cache) {
   let result;
   let playerState = gameState.getState().players;
 
-  if ('last player') {
+  if (cache.data.gameState.canEndRound()) {
     cache.data.gameState.endRound();
     // update metadata (distribution funds)
   }
@@ -46,7 +46,7 @@ function extract(req) {
 }
 
 async function bet(req, res, cache) {
-  const { lobbyId, inputs, address } = extract(req);
+  const { address } = extract(req);
   const { minBet } = cache.data.gameState.initialBet;
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
@@ -62,11 +62,16 @@ async function bet(req, res, cache) {
 }
 
 async function check(req, res, cache) {
-  const { lobbyId, inputs, address } = extract(req);
+  const { address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
     const index = metadata.players.indexOf(address);
-    cache.data.gameState.check(index);
+
+    // todo @ctnava - research
+    if ('player needs to call instead') {
+      await call(req, res, cache);
+      return;
+    } else cache.data.gameState.check(index);
     // see if active?
 
     cache = endRound(cache);
@@ -75,7 +80,7 @@ async function check(req, res, cache) {
 }
 
 async function raise(req, res, cache) {
-  const { lobbyId, inputs, address } = extract(req);
+  const { inputs, address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
     const index = metadata.players.indexOf(address);
@@ -91,7 +96,7 @@ async function raise(req, res, cache) {
 }
 
 async function call(req, res, cache) {
-  const { lobbyId, inputs, address } = extract(req);
+  const { address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
     const index = metadata.players.indexOf(address);
@@ -105,7 +110,7 @@ async function call(req, res, cache) {
 }
 
 async function fold(req, res, cache) {
-  const { lobbyId, inputs, address } = extract(req);
+  const { address } = extract(req);
   let metadata = cache.data.metadata;
   if (metadata.players.contains(address)) {
     const index = metadata.players.indexOf(address);
@@ -129,7 +134,7 @@ async function abort() {
     // compare lobbies to activeLobbies
 
     lobbies.forEach((lobbyId) => async () => {
-      // await contract.connect(deployer).abortGame(parseInt(lobbyId));
+      await contract.connect(deployer).abortGame(parseInt(lobbyId));
       fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
     });
   }
