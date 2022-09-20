@@ -1,146 +1,114 @@
 const fs = require('fs');
+const cacheUtils = require('./cache.js');
 const evm = require('../utils/evm.js');
 const contract = evm.loadContract(31337, 'LobbyTracker');
 
-async function endRound(lobbyId, cache) {
-  let { gameState, metadata } = cache.data;
-  let result;
-  let playerState = gameState.getState().players;
+async function playerActions(req, res, cache, cb) {
+  const lobbyId = req.params.lobbyId;
+  const address = req.body.player.address;
+  let { players } = cache.data.metadata;
 
-  if (cache.data.gameState.canEndRound()) {
-    cache.data.gameState.endRound();
-    // update metadata (distribution funds)
-  }
+  // verify sender is player
+  if (players.contains(address)) {
+    const index = players.indexOf(address);
 
-  if (metadata.round >= 3) {
-    result = cache.data.gameState.checkResult();
-    let increment = [];
-    let amounts = [];
-    const players = metadata.players;
-    players.forEach((player) => {
-      const index = players.indexOf(player);
-      increment.push(result.index == index);
-      // amounts.push(wagers);
-    });
+    // try to perform player action
+    try {
+      cache = cb(req, cache, index);
+    } catch (e) {
+      res.status(403).json(e);
+      badCall = true;
+      return;
+    }
 
-    const deployer = await evm.deployer();
-    // await contract.connect(deployer).disseminate(lobbyId, increment, amounts)
-    // const root = __dirname.slice(0, __dirname.indexOf('poker'));
-    // const pathToLobbies = `${root}/static/lobbies`;
-    // const lobbies = fs.readdirSync(pathToLobbies);
-    // let activePlayers; // = await contract.activePlayers(lobbyId);
-    // if (activePlayers == 0)
-    //   fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
+    if (cache.data.gameState.canEndRound()) {
+      cache.data.gameState.endRound();
+      // set wagers
+      // set pot
 
-    // newGame
-  } else cache.data.gameState.startRound();
+      if ('resetTable') {
+        // decide distribution
+        let result = cache.data.gameState.checkResult();
+        let increment = [];
+        players.forEach((player) => {
+          const index = players.indexOf(player);
+          const gain = result.index == index;
+          increment.push(gain);
+          // if (gain) cache.data.metadata.wager = pot;
+        });
+
+        // distribute funds
+        const deployer = await evm.deployer();
+        const wagers = cache.data.metadata.wagers;
+        await contract
+          .connect(deployer)
+          .disseminate(lobbyId, increment, wagers);
+        // await cacheUtils.purge(); ???
+      } else cache.data.gameState.startRound();
+    }
+
+    cacheUtils.saveThenSend(req, res, cache);
+  } else res.status(403).json({ notice: 'not player' });
+}
+
+// place initialBet
+function bet(req, cache, index) {
+  const actual = cache.data.gameState.bet(index);
+  cache.data.metadata.pot[index] += actual;
+  return cache;
+}
+
+function check(req, cache, index) {
+  cache.data.gameState.check(index);
+  return cache;
+}
+
+function raise(req, cache, index) {
+  const amount = req.body.inputs.amount;
+  const actual = cache.data.gameState.raise(index, amount);
+  cache.data.metadata.pot[index] += actual;
+  return cache;
+}
+
+function call(req, cache, index) {
+  const actual = cache.data.gameState.call(index);
+  cache.data.metadata.pot[index] = actual;
 
   return cache;
 }
 
-function extract(req) {
-  const lobbyId = req.params.lobbyId;
-  const inputs = req.body.inputs;
-  const address = req.body.player.address;
-  return { lobbyId, inputs, address };
+function fold(req, cache, index) {
+  cache.data.gameState.fold(index);
+  return cache;
 }
 
-async function bet(req, res, cache) {
-  const { address } = extract(req);
-  const { minBet } = cache.data.gameState.initialBet;
-  let metadata = cache.data.metadata;
-  if (metadata.players.contains(address)) {
-    const index = metadata.players.indexOf(address);
-    cache.data.gameState.bet(index);
-    cache.data.gameState.players[index].money -= minBet;
-    // see if active?
-    // require, amount <= deposit
+function startRound(cache) {
+  cache.data.gameState.startRound();
 
-    cache = endRound(cache);
-    cacheUtils.saveThenSend(req, res, cache);
-  } else res.status(403).json({ notice: 'not player' });
+  // const turn = cache.data.metadata.turn;
+  // const players = cache.data.metadata.players.length;
+  // if (turn < players) cache.data.metadata.turn += 1;
+
+  return cache;
 }
 
-async function check(req, res, cache) {
-  const { address } = extract(req);
-  let metadata = cache.data.metadata;
-  if (metadata.players.contains(address)) {
-    const index = metadata.players.indexOf(address);
+function endRound(cache) {
+  cache.data.gameState.endRound();
+  const pot = cache.data.metadata.pot;
+  pot.forEach((wager, idx) => {
+    cache.data.metadata.wagers[idx] += wager;
+    cache.data.metadata.pot[idx] = 0;
+  });
+  cache.data.metadata.round += 1;
+  cache.data.metadata.turn = 0;
 
-    // todo @ctnava - research
-    if ('player needs to call instead') {
-      await call(req, res, cache);
-      return;
-    } else cache.data.gameState.check(index);
-    // see if active?
-
-    cache = endRound(cache);
-    cacheUtils.saveThenSend(req, res, cache);
-  } else res.status(403).json({ notice: 'not player' });
-}
-
-async function raise(req, res, cache) {
-  const { inputs, address } = extract(req);
-  let metadata = cache.data.metadata;
-  if (metadata.players.contains(address)) {
-    const index = metadata.players.indexOf(address);
-    const amount = inputs.amount;
-    cache.data.gameState.raise(index, amount);
-    cache.data.gameState.players[index].money -= amount;
-    // require, amount <= deposit, see if others call?
-    // see if active?
-
-    cache = endRound(cache);
-    cacheUtils.saveThenSend(req, res, cache);
-  } else res.status(403).json({ notice: 'not player' });
-}
-
-async function call(req, res, cache) {
-  const { address } = extract(req);
-  let metadata = cache.data.metadata;
-  if (metadata.players.contains(address)) {
-    const index = metadata.players.indexOf(address);
-    cache.data.gameState.call(index);
-    // require, amount <= deposit
-    // see if active?
-
-    cache = endRound(cache);
-    cacheUtils.saveThenSend(req, res, cache);
-  } else res.status(403).json({ notice: 'not player' });
-}
-
-async function fold(req, res, cache) {
-  const { address } = extract(req);
-  let metadata = cache.data.metadata;
-  if (metadata.players.contains(address)) {
-    const index = metadata.players.indexOf(address);
-    cache.data.gameState.fold(index);
-    // see if active?
-
-    cache = endRound(cache);
-    cacheUtils.saveThenSend(req, res, cache);
-  } else res.status(403).json({ notice: 'not player' });
+  return cache;
 }
 
 // INTERNAL
-// @ctnava todo - monitor frontend
-async function abort() {
-  if ('frontend.isDown()') {
-    const deployer = await evm.deployer();
-    const root = __dirname.slice(0, __dirname.indexOf('poker'));
-    const pathToLobbies = `${root}/static/lobbies`;
-    const lobbies = fs.readdirSync(pathToLobbies);
-    // purge();
-    // compare lobbies to activeLobbies
-
-    lobbies.forEach((lobbyId) => async () => {
-      await contract.connect(deployer).abortGame(parseInt(lobbyId));
-      fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
-    });
-  }
-}
 
 // function autoFold() {}
+
 async function handleTimeout(cache) {
   if (cache.metadata.active == true && cache.metadata.waiting == false) {
     const lastAction = cache.data.metadata.lastAction;
@@ -149,7 +117,8 @@ async function handleTimeout(cache) {
     const deployer = await evm.deployer();
     for await (const player of players) {
       const index = players.indexOf(player);
-      if (timestamp - lastAction > timeoutPeriod) {
+
+      if (timestamp - lastAction[index] > timeoutPeriod) {
         // purge();
         await contract.connect(deployer).ejectPlayer(lobbyId, address);
       }
@@ -157,4 +126,13 @@ async function handleTimeout(cache) {
   }
 }
 
-module.exports = { bet, check, raise, call, fold };
+module.exports = {
+  playerActions,
+  bet,
+  check,
+  raise,
+  call,
+  fold,
+  startRound,
+  endRound,
+};

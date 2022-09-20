@@ -10,9 +10,13 @@ function create(state, lobbyId) {
 
   let ready = [];
   let lastAction = [];
+  let wagers = [];
+  let pot = [];
   state.players.forEach(() => {
     ready.push(false);
     lastAction.push(null);
+    wagers.push(0);
+    pot.push(0);
   });
 
   let metadata = {
@@ -25,7 +29,10 @@ function create(state, lobbyId) {
     maxPlayers: state.maxPlayers,
     lastAction,
     ready,
-    round: 0,
+    round: 1,
+    turn: 0,
+    wagers,
+    pot,
   };
 
   return { gameState, metadata };
@@ -89,10 +96,42 @@ function saveThenSend(req, res, cache) {
   send(req, res);
 }
 
+async function purge() {
+  const root = __dirname.slice(0, __dirname.indexOf('poker'));
+  const pathToLobbies = `${root}/static/lobbies`;
+  const oldLobbies = await contract.oldLobbies();
+  if (oldLobbies.length > 0)
+    oldLobbies.forEach((lobby) =>
+      fs.rmdirSync(`${pathToLobbies}/${lobby}`, { recursive: true })
+    );
+}
+
+// INTERNAL
+// @ctnava todo - monitor frontend
+async function abortAll() {
+  if ('frontend.isDown()') {
+    const deployer = await evm.deployer();
+    const root = __dirname.slice(0, __dirname.indexOf('poker'));
+    const pathToLobbies = `${root}/static/lobbies`;
+    const lobbies = fs.readdirSync(pathToLobbies);
+
+    // compare lobbies to activeLobbies
+
+    lobbies.forEach((lobbyId) => async () => {
+      await contract.connect(deployer).abortGame(parseInt(lobbyId));
+      fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
+    });
+
+    await purge();
+  }
+}
+
 module.exports = {
   create,
   retrieve,
   send,
   saveThenSend,
   reconstitute,
+  purge,
+  abortAll,
 };

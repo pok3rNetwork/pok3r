@@ -1,6 +1,6 @@
 const cacheUtils = require('./cache.js');
 const lobbyUtils = require('./lobby.js');
-const gameUtils = require('./game.js');
+const { playerActions, bet, check, raise, call, fold } = require('./game.js');
 const evm = require('../utils/evm.js');
 const autoplay = require('./autoplay.js');
 
@@ -28,8 +28,10 @@ function poker(app) {
       else {
         // catch
         if (!cache.exists) res.status(404).json(cache.data);
+        //
         // testing the game logic (off-chain)
         else if (action.type == 'auto') autoplay(req, res, cache);
+        //
         // before the game
         else if (action.type == 'join')
           await lobbyUtils.joinGame(req, res, cache);
@@ -39,12 +41,19 @@ function poker(app) {
           await lobbyUtils.readyUp(req, res, cache);
         else if (action.type == 'start')
           await lobbyUtils.start(req, res, cache);
+        //
         // during the game
-        else if (action.type == 'bet') await gameUtils.bet(req, res, cache);
-        else if (action.type == 'check') await gameUtils.check(req, res, cache);
-        else if (action.type == 'raise') await gameUtils.raise(req, res, cache);
-        else if (action.type == 'call') await gameUtils.call(req, res, cache);
-        else if (action.type == 'fold') await gameUtils.fold(req, res, cache);
+        else if (action.type == 'bet')
+          await playerActions(req, res, cache, bet);
+        else if (action.type == 'check')
+          await playerActions(req, res, cache, check);
+        else if (action.type == 'raise')
+          await playerActions(req, res, cache, raise);
+        else if (action.type == 'call')
+          await playerActions(req, res, cache, call);
+        else if (action.type == 'fold')
+          await playerActions(req, res, cache, fold);
+        //
         // catch
         else res.status(404).json({ notice: 'Route Not Configured' });
       }
