@@ -7,6 +7,7 @@ async function playerActions(req, res, cache, cb) {
   const lobbyId = req.params.lobbyId;
   const address = req.body.player.address;
   let { players } = cache.data.metadata;
+  const turn = cache.data.metadata.turn;
 
   // verify sender is player
   if (players.contains(address)) {
@@ -22,19 +23,17 @@ async function playerActions(req, res, cache, cb) {
     }
 
     if (cache.data.gameState.canEndRound()) {
-      cache.data.gameState.endRound();
-      // set wagers
-      // set pot
-
-      if ('resetTable') {
+      cache = endRound(cache); // manage wagers x pot
+      try {
+        cache.data.gameState.startRound();
+      } catch (e) {
         // decide distribution
         let result = cache.data.gameState.checkResult();
+        let winner = result.index;
         let increment = [];
-        players.forEach((player) => {
-          const index = players.indexOf(player);
-          const gain = result.index == index;
+        players.forEach((player, idx) => {
+          const gain = winner == idx;
           increment.push(gain);
-          // if (gain) cache.data.metadata.wager = pot;
         });
 
         // distribute funds
@@ -43,8 +42,13 @@ async function playerActions(req, res, cache, cb) {
         await contract
           .connect(deployer)
           .disseminate(lobbyId, increment, wagers);
-        // await cacheUtils.purge(); ???
-      } else cache.data.gameState.startRound();
+        players.forEach((player, idx) => {
+          cache.data.metadata.wagers[idx] = 0;
+        });
+      }
+    } else {
+      const numPlayers = players.length;
+      if (turn < numPlayers) cache.data.metadata.turn += 1;
     }
 
     cacheUtils.saveThenSend(req, res, cache);
@@ -84,10 +88,6 @@ function fold(req, cache, index) {
 
 function startRound(cache) {
   cache.data.gameState.startRound();
-
-  // const turn = cache.data.metadata.turn;
-  // const players = cache.data.metadata.players.length;
-  // if (turn < players) cache.data.metadata.turn += 1;
 
   return cache;
 }

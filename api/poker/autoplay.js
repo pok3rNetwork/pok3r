@@ -65,6 +65,7 @@ function autoplay(req, res, cache) {
     printMoney(cache);
     console.log('\nend game');
     const result = cache.data.gameState.checkResult();
+    console.log(result);
     if (result.type == 'win')
       console.log('Player' + (result.index + 1) + ' won with ' + result.name);
     else console.log('Draw');
