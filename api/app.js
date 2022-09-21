@@ -18,6 +18,7 @@ const {
   viewer,
   vodStream,
   compositeVideo,
+  // utilityConnectionTypes
   avLoopback,
   dataChannelBufferLimits,
   pitchDetector,
