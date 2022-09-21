@@ -1,29 +1,35 @@
-require('dotenv').config();
-const port = process.env.API_PORT ? process.env.API_PORT : 8081;
-const url = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL
-  : `http://localhost:${port}/poker/`;
-
-const fs = require('fs');
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+const { port, initApp } = require('./utils/setup.js');
 const poker = require('./poker/route.js');
+const {
+  // connectionTypes
+  broadcaster,
+  viewer,
+  vodStream,
+  compositeVideo,
+  avLoopback,
+  dataChannelBufferLimits,
+  pitchDetector,
+  pingPong,
+  sineWaveBase,
+  sineWaveStereo,
+  // connectionUtil
+  mount,
+} = require('./utils/wrtc/server.js');
 
-const app = express();
-app.use(bodyParser.json());
-app.use(cors({ origin: url }));
+const app = initApp(__dirname);
 
-if (!fs.existsSync(`${__dirname}/static/lobbies`))
-  fs.mkdirSync(`${__dirname}/static/lobbies`, { recursive: true });
-app.use('/static', express.static('static'));
+let connectionManagers = [];
+function mountConnection(typeOf, pathTo) {
+  const connection = typeOf();
+  mount(app, connection, pathTo);
+  connectionManagers.push(connection);
+}
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log('Server Started on Port:' + port);
-});
-
-app.get('/', (req, res) => {
-  res.json({ welcomeMessage: 'Hello World!', url });
+  server.once('close', () =>
+    connectionManagers.forEach((connectionManager) => connectionManager.close())
+  );
 });
 
 poker(app, __dirname);
