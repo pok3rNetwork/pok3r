@@ -1,8 +1,7 @@
 const broadcaster = require('./connections/broadcaster');
 const viewer = require('./connections/viewer');
 const vodStream = require('./connections/vodStream');
-// const compositeVideo = require('./connections/compositeVideo');
-let compositeVideo;
+const compositeVideo = require('./connections/compositeVideo');
 
 const avLoopback = require('./connections/avLoopback');
 const dataChannelBufferLimits = require('./connections/dataChannelBufferLimits');
