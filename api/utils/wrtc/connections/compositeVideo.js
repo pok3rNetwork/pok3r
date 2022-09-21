@@ -1,5 +1,5 @@
 const { createCanvas, createImageData } = require('canvas');
-const { hsv } = require('color-space');
+const { hsv } = require('color-convert');
 const { performance } = require('perf_hooks');
 
 const { RTCVideoSink, RTCVideoSource, i420ToRgba, rgbaToI420 } =
