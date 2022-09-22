@@ -120,7 +120,9 @@ async function handleTimeout(cache) {
 
       if (timestamp - lastAction[index] > timeoutPeriod) {
         // purge();
-        await contract.connect(deployer).ejectPlayer(lobbyId, address);
+        await (
+          await contract.connect(deployer).ejectPlayer(lobbyId, address)
+        ).wait(1);
       }
     }
   }
