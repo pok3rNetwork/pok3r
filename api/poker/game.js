@@ -39,12 +39,25 @@ async function playerActions(req, res, cache, cb) {
         // distribute funds
         const deployer = await evm.deployer();
         const wagers = cache.data.metadata.wagers;
-        await contract
-          .connect(deployer)
-          .disseminate(lobbyId, increment, wagers);
+        await (
+          await contract
+            .connect(deployer)
+            .disseminate(lobbyId, increment, wagers)
+        ).wait(1);
         players.forEach((player, idx) => {
           cache.data.metadata.wagers[idx] = 0;
         });
+
+        const lobbyId = cache.data.metadata.id;
+        const lobbyState = await contract.lobby(lobbyId);
+        const defaultData = cacheUtils.create(lobbyState, lobbyId);
+
+        defaultData.metadata.lastAction = cache.data.metadata.lastAction;
+        defaultData.metadata.ready.forEach(
+          (readyState, idx) => (defaultData.ready[idx] = true)
+        );
+
+        cache.data = defaultData;
       }
     } else {
       const numPlayers = players.length;
