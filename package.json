@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "setup": "node ./util/install.js",
     "rest": "nodemon ./api/app.js",
-    "localchain": "npx hardhat node",
+    "localChain": "npx hardhat node",
     "getBalances": "npx hardhat run ./blockchain/scripts/balances.js",
     "deploy": "npx hardhat run ./blockchain/scripts/deploy.js"
   },

@@ -16,19 +16,21 @@ async function deployAll() {
   console.log(`Account balance: ${(await deployer.getBalance()).toString()}\n`);
 
   let token;
-  const isDev = chainId === 31337 || chainId === 1337;
+  const isDev = chainId === 31337 || chainId === 1337 || chainId === 80001;
   if (isDev) token = await runDeployment('usdt', chainId);
-  const deployedToken = token !== undefined;
   const tokenAddress =
-    deployedToken === true ? token.address : oracles[chainId.toString()]; // change this to usdc addresses
+    chainId === 137
+      ? '0x2791bca1f2de4661ed88a30c99a7a9449aa84174' // USDC (PoS)
+      : token.address;
 
   const LobbyTrackerFactory = await ethers.getContractFactory('LobbyTracker');
   const LobbyTracker = await LobbyTrackerFactory.deploy(tokenAddress);
+
   console.log(`\nLobbyTracker deployed to ${LobbyTracker.address}`);
   console.log(`Account balance: ${(await deployer.getBalance()).toString()}`);
   saveFrontendFiles(LobbyTracker, 'LobbyTracker', chainId);
 
-  if (isDev) initialize(signers, token, LobbyTracker);
+  if (isDev) await initialize(signers, token, LobbyTracker);
 }
 
 deployAll();

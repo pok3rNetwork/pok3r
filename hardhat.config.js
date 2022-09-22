@@ -1,24 +1,23 @@
 require('dotenv').config();
 require('@nomicfoundation/hardhat-toolbox');
 
-const mNodeKey = process.env.MORALIS_KEY;
-const aMNodeKey = process.env.ALCHEMY_OPTM_KEY;
-const aTNodeKey = process.env.ALCHEMY_OPTT_KEY;
+const csNodeKey = process.env.CHAINSTACK_KEY;
+const amNodeKey = process.env.ALCHEMY_OPTM_KEY;
+const atNodeKey = process.env.ALCHEMY_OPTT_KEY;
 
 function getProvider(chainId) {
-  const mRegions = ['speedy-nodes-nyc'];
-  const mUrl = `https://nd-523-252-766.p2pify.com/${mNodeKey}/`;
+  const csUrl = `https://nd-523-252-766.p2pify.com/${csNodeKey}/`;
   const aUrl = `g.alchemy.com/v2/`;
   switch (chainId) {
     case 10:
-      return 'https://opt-mainnet.' + aUrl + aMNodeKey;
+      return 'https://opt-mainnet.' + aUrl + amNodeKey;
     case 69:
-      return 'https://opt-kovan.' + aUrl + aTNodeKey;
+      return 'https://opt-kovan.' + aUrl + atNodeKey;
 
     case 137:
-      return mUrl;
+      return csUrl;
     case 80001:
-      return mUrl;
+      return csUrl;
 
     default:
       return 'unsupported/chainId';
