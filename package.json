@@ -7,7 +7,8 @@
     "setup": "node ./util/install.js",
     "rest": "nodemon ./api/app.js",
     "localchain": "npx hardhat node",
-    "deploy": "npx hardhat run blockchain/scripts/deploy.js"
+    "getBalances": "npx hardhat run ./blockchain/scripts/balances.js",
+    "deploy": "npx hardhat run ./blockchain/scripts/deploy.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "@openzeppelin/contracts": "^4.7.3",
     "dotenv": "^16.0.2",
+    "ethers": "^5.7.1",
     "hardhat": "^2.11.2",
     "holdem-poker": "^0.2.0",
     "nodemon": "^2.0.19"
