@@ -118,7 +118,9 @@ async function abortAll() {
     // compare lobbies to activeLobbies
 
     lobbies.forEach((lobbyId) => async () => {
-      await contract.connect(deployer).abortGame(parseInt(lobbyId));
+      await (
+        await contract.connect(deployer).abortGame(parseInt(lobbyId))
+      ).wait(1);
       fs.rmdirSync(`${pathToLobbies}/${lobbyId}`, { recursive: true });
     });
 
