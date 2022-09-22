@@ -8,6 +8,7 @@
 **yarn.lock
 **package-lock.json
 **yarn-error.log
+**firebase.json
 
 blockchain/coverage
 blockchain/coverage.json
