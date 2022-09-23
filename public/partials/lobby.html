@@ -1,0 +1,31 @@
+<div id="lobby">
+	<div class="modal-wrap" ng-show="!$root.screenName">
+		<div class="modal">
+			<form ng-submit="register()">
+				<label for="screen-name-input">Active EVM Network. Enter Gamertag: </label>
+				<p class="table-requirements error" ng-show="registerError">{{registerError}}</p>
+				<input id="screen-name-input" class="input-left" type="text" ng-model="newScreenName" ng-trim="true" required>
+				<input type="submit" value="Connect Wallet">
+			</form>
+		</div>
+		<div id="curtain" ng-show="!$root.screenName"></div>
+	</div>
+
+	<img src="https://nftstorage.link/ipfs/bafybeiad5uojx7cagbj4sl6j7ft5a2hmvo75h5lv2s4g3u4dh4egqxs5g4" alt="Poker Networks logo" style="width:100%;">
+
+	<br>
+	<h1> Welcome to Pok3r Network, a multiplayer onchain decentralized poker room: </h1>
+	<table id="table-list">
+		<tr>
+			<th class="dark-border">Livepeer Lobby</th>
+			<th class="dark-border">BB/SB</th>
+			<th>Players</th>
+		</tr>
+		<tr ng-repeat="table in lobbyTables">
+			<td><a href="/table-{{table.seatsCount}}/{{table.id}}">{{table.name}}</a></td>
+			<td class="centered-text">{{table.bigBlind}}/{{table.smallBlind}}</td>
+			<td class="centered-text">{{table.playersSeatedCount}}/{{table.seatsCount}}</td>
+		</tr>
+	</table>
+</div>			
+
